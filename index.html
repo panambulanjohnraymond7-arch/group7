@@ -1,0 +1,503 @@
+<!DOCTYPE html> 
+
+<html lang="en"> 
+
+<head> 
+
+<meta charset="UTF-8"> 
+
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+<title>Library Resource and Borrowing Management System · ZPPSU</title> 
+
+<style> 
+
+:root{--mar:#6E0F1C;--mar2:#8C1D2E;--gold:#D6A826;--gold2:#F3E2A9;--line:#E2D6D8;--mute:#6b5d5f;--soft:#F6F2F2} 
+
+*{box-sizing:border-box} 
+
+body{margin:0;font:16px/1.5 "Segoe UI",system-ui,sans-serif;color:#000;background:#fff} 
+
+h1,h2,h3,.brand{font-family:Palatino,"Palatino Linotype",Georgia,serif;margin:0} 
+
+h2{font-size:1.9rem;color:var(--mar)}h3{font-size:1.2rem;margin:1.6rem 0 .6rem} 
+
+button,input,select{font:inherit} 
+
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px} 
+
+.btn{background:var(--mar);color:#fff;border:2px solid var(--mar);padding:.55rem 1.1rem;border-radius:6px;cursor:pointer;font-weight:600} 
+
+.btn:hover{background:#000;border-color:#000}.btn.gold{background:var(--gold);border-color:var(--gold);color:#000}.btn.gold:hover{background:#000;color:var(--gold)} 
+
+.btn.ghost{background:#fff;color:var(--mar)}.btn.ghost:hover{background:var(--mar);color:#fff}.btn.sm{padding:.2rem .65rem;font-size:.85rem} 
+
+label{display:block;font-weight:600;margin:.8rem 0 .25rem} 
+
+input,select{width:100%;padding:.55rem .7rem;border:2px solid var(--line);border-radius:6px;background:#fff} 
+
+input:focus,select:focus{border-color:var(--mar2)} 
+
+.hint{color:var(--mute);font-size:.85rem}.lead{color:var(--mute);margin:.2rem 0 1.2rem} 
+
+.auth{display:grid;grid-template-columns:1.1fr 1fr;min-height:100vh} 
+
+.hero{background:var(--mar);color:#fff;padding:3rem;display:flex;flex-direction:column;justify-content:center;border-right:10px solid var(--gold)} 
+
+.hero h1{font-size:2.7rem;line-height:1.1}.hero p{max-width:30rem;color:#f0dcdf} 
+
+.hero ul{list-style:none;padding:0;margin:1.6rem 0 0;display:grid;gap:.6rem}.hero li{padding-left:1rem;border-left:4px solid var(--gold)} 
+
+.formside{display:flex;align-items:center;justify-content:center;padding:2rem}.formbox{width:100%;max-width:25rem} 
+
+.switch{margin-top:1rem;text-align:center}.switch a{color:var(--mar);font-weight:700;cursor:pointer;text-decoration:underline} 
+
+.demo{background:var(--gold2);border-left:5px solid var(--gold);padding:.6rem .8rem;margin-top:1rem;font-size:.88rem;border-radius:4px} 
+
+.err{color:var(--mar2);font-weight:600;margin-top:.6rem} 
+
+header.top{background:var(--mar);color:#fff;border-bottom:5px solid var(--gold);display:flex;align-items:center;gap:1rem;padding:.7rem 1.2rem;flex-wrap:wrap} 
+
+.brand{font-size:1.5rem;font-weight:700}.brand b{color:var(--gold)} 
+
+nav{display:flex;gap:.3rem;flex-wrap:wrap;flex:1} 
+
+nav button{background:none;border:0;color:#fff;padding:.5rem .8rem;border-radius:6px;cursor:pointer;font-weight:600} 
+
+nav button:hover{background:rgba(255,255,255,.14)}nav button.on{background:var(--gold);color:#000} 
+
+.who{font-size:.9rem} 
+
+main{max-width:66rem;margin:0 auto;padding:1.5rem 1.2rem 3rem} 
+
+.stats{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0} 
+
+.stat{flex:1;min-width:7.5rem;border-bottom:4px solid var(--gold);padding:.3rem 0} 
+
+.stat b{display:block;font-family:Palatino,Georgia,serif;font-size:2.3rem;color:var(--mar);line-height:1} 
+
+.panel{border:2px solid #000;border-radius:8px;padding:1.1rem 1.2rem;margin:1rem 0;max-width:40rem} 
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem} 
+
+.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}.toolbar input{flex:2;min-width:12rem}.toolbar select{flex:1;min-width:9rem} 
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:1rem} 
+
+.book{display:flex;border:2px solid #000;border-radius:6px;overflow:hidden;background:#fff} 
+
+.sp{width:2.5rem;flex:none;background:linear-gradient(var(--mar) 0 14%,var(--gold) 14% 18%,var(--mar) 18% 82%,var(--gold) 82% 86%,var(--mar) 86%);color:var(--gold2);writing-mode:vertical-rl;text-align:center;font-size:.64rem;font-weight:700;letter-spacing:.02em;padding:1.7rem 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} 
+
+.bd{padding:.8rem 1rem;flex:1;display:flex;flex-direction:column;gap:.3rem} 
+
+.bd .t{font-family:Palatino,Georgia,serif;font-size:1.15rem;font-weight:700;line-height:1.25} 
+
+.meta{color:var(--mute);font-size:.88rem} 
+
+.chip{display:inline-block;padding:.05rem .6rem;border-radius:99px;font-size:.78rem;font-weight:700;border:2px solid} 
+
+.ok{background:var(--gold2);border-color:var(--gold);color:#4d3a00}.out{background:#000;border-color:#000;color:var(--gold)} 
+
+.late{background:var(--mar);border-color:var(--mar);color:#fff}.arc{background:#fff;border-color:#000} 
+
+.life{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:.2rem}.life i{display:block;height:100%;background:var(--gold)} 
+
+.life.warn i{background:var(--mar)}.life.old i{background:#000} 
+
+.tw{overflow-x:auto;border:2px solid #000;border-radius:8px} 
+
+table{border-collapse:collapse;width:100%;min-width:34rem} 
+
+th{background:#000;color:var(--gold);text-align:left;padding:.5rem .7rem;font-size:.9rem} 
+
+td{padding:.5rem .7rem;border-top:1px solid var(--line);vertical-align:middle}tr.late td{background:#fbeaec} 
+
+.empty{border:2px dashed var(--line);border-radius:8px;padding:1.6rem;text-align:center;color:var(--mute)} 
+
+.note{border-left:5px solid var(--gold);background:var(--gold2);padding:.7rem 1rem;border-radius:4px;margin:.8rem 0} 
+
+.ft{border-top:5px solid var(--gold);background:#000;color:#ddd;padding:1rem 1.2rem;font-size:.85rem;text-align:center}.ft b{color:var(--gold)} 
+
+#toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);background:#000;color:var(--gold);padding:.7rem 1.2rem;border-radius:8px;border:2px solid var(--gold);opacity:0;pointer-events:none;transition:opacity .25s;z-index:9} 
+
+#toast.show{opacity:1} 
+
+@media(max-width:760px){.auth{grid-template-columns:1fr}.hero{padding:2rem;border-right:0;border-bottom:10px solid var(--gold)}.hero h1{font-size:2rem}.two{grid-template-columns:1fr}} 
+
+@media print{header,.ft,.toolbar,.btn,#toast{display:none!important}} 
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important}} 
+
+</style> 
+
+</head> 
+
+<body> 
+
+<div id="app"></div><div id="toast" role="status"></div> 
+
+<script> 
+
+const $=s=>document.querySelector(s); 
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); 
+
+const YEAR=new Date().getFullYear(); 
+
+const day=(o=0)=>{const d=new Date();d.setDate(d.getDate()+o);const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),a=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${a}`}; 
+
+const TODAY=day(); 
+
+const fmt=d=>new Date(d+"T00:00").toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"}); 
+
+function seed(){ 
+
+const B=[["Introduction to Algorithms","Cormen et al.","Computer Science",2022,"A-1",3],["Database System Concepts","Silberschatz","Information Technology",2020,"A-2",2],["Philippine History","Zaide","History",2018,"C-4",2],["Noli Me Tangere","José Rizal","Literature",2013,"D-1",4],["College Algebra","Lopez","Mathematics",2016,"B-3",3],["Environmental Science","Cruz","Science",2024,"B-1",2],["Fundamentals of Web Design","Santos","Information Technology",2010,"A-5",2],["Basic Computer Programming","Reyes","Computer Science",2005,"A-9",1]] 
+
+.map((b,i)=>({id:"b"+i,title:b[0],author:b[1],cat:b[2],year:b[3],loc:b[4],copies:b[5],arch:false})); 
+
+return{users:[{id:"u0",name:"Administrator",idno:"-",user:"admin",pass:"admin123",role:"Administrator"},{id:"u1",name:"Library Staff",idno:"-",user:"staff",pass:"staff123",role:"Library Staff"},{id:"u2",name:"Juan Dela Cruz",idno:"2024-0001",user:"student",pass:"student123",role:"Borrower"}], 
+
+books:B,loans:[{id:"l0",bid:"b0",uid:"u2",out:day(-10),due:day(-3),ret:null}],life:15,n:100,log:[],set:{name:"ZPPSU Library",loanDays:7,fine:5,maxLoans:3,contact:"library@zppsu.edu.ph"}}; 
+
+} 
+
+function load(){try{const d=JSON.parse(localStorage.getItem("lrbms"));if(d){d.set=Object.assign({name:"ZPPSU Library",loanDays:7,fine:5,maxLoans:3,contact:"library@zppsu.edu.ph"},d.set);d.log=d.log||[];return d}}catch(e){}return seed()} 
+
+let db=load(),me=null,tab="",mode="login",err="",editId=null,recId=null; 
+
+const save=()=>{try{localStorage.setItem("lrbms",JSON.stringify(db))}catch(e){toast("Could not save. Browser storage is full.")}}; 
+
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2800)} 
+
+const staff=()=>me.role!=="Borrower",admin=()=>me.role==="Administrator"; 
+
+const book=id=>db.books.find(b=>b.id===id)||{title:"(deleted book)"},user=id=>db.users.find(u=>u.id===id); 
+
+const od=l=>Math.max(0,Math.round((new Date(l.ret||TODAY)-new Date(l.due))/864e5)),fineOf=l=>od(l)*db.set.fine; 
+
+const log=m=>{db.log.unshift({at:Date.now(),by:me?me.name:"System",msg:m});db.log.length=Math.min(db.log.length,200)}; 
+
+const active=b=>db.loans.filter(l=>l.bid===b.id&&!l.ret).length; 
+
+const avail=b=>b.copies-active(b); 
+
+const age=b=>YEAR-b.year; 
+
+const late=l=>!l.ret&&l.due<TODAY; 
+
+const old=b=>age(b)>=db.life; 
+
+function sweep(){let n=0;db.books.forEach(b=>{if(!b.arch&&!b.keep&&old(b)&&!active(b)){b.arch=true;b.archAt=TODAY;n++}});if(n){log(`Auto-archived ${n} book(s) past ${db.life} years`);save()}return n} 
+
+  
+
+/* ---------- AUTH ---------- */ 
+
+function authView(){ 
+
+const su=mode==="signup"; 
+
+$("#app").innerHTML=`<div class="auth"><section class="hero"><div class="brand" style="font-size:1.2rem">ZPPSU <b>LRBMS</b></div> 
+
+<h1>Find a book. Borrow it. Return it on time.</h1> 
+
+<p>The ZPPSU library, organized in one place: catalog, borrowing records and a shelf that keeps itself fresh.</p> 
+
+<ul><li>Search by title, author or category</li><li>See if a copy is available and where it sits</li><li>Old resources move to the archive after ${db.life} years</li></ul></section> 
+
+<section class="formside"><div class="formbox" id="af"><h2>${su?"Create a borrower account":"Welcome, we're glad you're here."}</h2> 
+
+<p class="hint">${su?"For ZPPSU students and personnel.":"Log in to continue."}</p> 
+
+${su?`<label for="fn">Full name</label><input id="fn" required><label for="fi">ID number</label><input id="fi" required placeholder="e.g. 2024-0001">`:""} 
+
+<label for="fu">Username</label><input id="fu" required><label for="fp">Password</label><input id="fp" type="password" required minlength="4"> 
+
+<div class="err">${esc(err)}</div><p><button class="btn" style="width:100%">${su?"Sign up":"Log in"}</button></p> 
+
+<div class="switch">${su?"Already registered? <a id='sw'>Log in</a>":"New borrower? <a id='sw'>Create an account</a>"}</div><div class="switch"><a id="gu">Browse the catalog without logging in</a></div> 
+
+${su?"":`<div class="demo"><b>Demo logins</b><br>Administrator: admin / admin123<br>Library staff: staff / staff123<br>Borrower: student / student123</div>`} 
+
+</div></section></div>`; 
+
+$("#sw").onclick=()=>{mode=su?"login":"signup";err="";authView()};$("#gu").onclick=()=>{me={id:"guest",name:"Guest",role:"Borrower",guest:1};tab="catalog";appView()}; 
+
+$("#af").onsubmit=e=>{e.preventDefault();const u=$("#fu").value.trim().toLowerCase(),p=$("#fp").value; 
+
+if(su){if(db.users.some(x=>x.user===u)){err="That username is taken. Pick another one.";return authView()} 
+
+me={id:"u"+Date.now(),name:$("#fn").value.trim(),idno:$("#fi").value.trim(),user:u,pass:p,role:"Borrower"};db.users.push(me);save()} 
+
+else{me=db.users.find(x=>x.user===u&&x.pass===p);if(!me){err="Wrong username or password. Check both and try again.";return authView()}} 
+
+err="";tab=staff()?"home":"catalog";const n=sweep();appView();if(n&&staff())toast(`${n} book${n>1?"s":""} past ${db.life} years moved to the archive.`)}; 
+
+} 
+
+  
+
+/* ---------- SHELL ---------- */ 
+
+const VIEWS={home:dash,catalog:catalog,circ:circ,books:books,archive:archive,reports:reports,accounts:accounts,loans:myLoans,records:records,profile:profile,settings:settings}; 
+
+function appView(){ 
+
+const T=me.guest?[["catalog","Catalog"]]:!staff()?[["catalog","Catalog"],["loans","My loans"]]:[["home","Dashboard"],["catalog","Catalog"],["circ","Borrow & return"],["books","Books"],["records","Records"],["archive","Archive"],["reports","Reports"],...(admin()?[["accounts","Accounts"],["settings","Settings"]]:[])]; 
+
+$("#app").innerHTML=`<header class="top"><div class="brand">ZPPSU <b>LRBMS</b></div><nav>${T.map(([k,l])=>`<button data-t="${k}" class="${tab===k?"on":""}">${l}</button>`).join("")}</nav> 
+
+<div class="who">${me.guest?"":`<button class="btn sm ghost" id="pf" title="My profile">${esc(me.name)} (${me.role})</button> `}<button class="btn sm gold" id="lo">${me.guest?"Log in":"Log out"}</button></div></header><main id="main"></main><footer class="ft"><b>${esc(db.set.name)}</b> · ${esc(db.set.contact)}<br>Resources older than ${db.life} years are archived and kept in the library.</footer>`; 
+
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;editId=null;recId=null;appView()}); 
+
+$("#lo").onclick=()=>{me=null;mode="login";authView()};if($("#pf"))$("#pf").onclick=()=>{tab="profile";appView()};VIEWS[tab](); 
+
+} 
+
+const stat=(n,l)=>`<div class="stat"><b>${n}</b>${l}</div>`; 
+
+const tbl=(h,r,e)=>r.length?`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${r.join("")}</table></div>`:`<div class="empty">${e}</div>`; 
+
+function meter(b){const a=age(b),p=Math.min(100,a/db.life*100),c=a>=db.life?"old":a>=db.life-2?"warn":""; 
+
+return `<div class="life ${c}" title="${a} of ${db.life} years"><i style="width:${p}%"></i></div><div class="meta">${a>=db.life?`Past shelf life (${a} yrs)`:a>=db.life-2?`Archives in ${db.life-a} yr${db.life-a>1?"s":""} (${a} of ${db.life})`:`${a} of ${db.life} years`}</div>`} 
+
+function card(b){const a=avail(b); 
+
+return `<article class="book"><div class="sp">${esc(b.cat)}</div><div class="bd"><div class="t">${esc(b.title)}</div><div class="meta">${esc(b.author)} · ${b.year}</div> 
+
+<div class="meta">Shelf ${esc(b.loc)}</div><div>${b.arch?'<span class="chip arc">Archived</span>':a>0?`<span class="chip ok">${a} of ${b.copies} available</span>`:'<span class="chip out">All copies borrowed</span>'}</div>${meter(b)}</div></article>`} 
+
+  
+
+/* ---------- VIEWS ---------- */ 
+
+function dash(){ 
+
+const A=db.loans.filter(l=>!l.ret),L=A.filter(late),soon=db.books.filter(b=>!b.arch&&age(b)>=db.life-2&&!old(b)); 
+
+$("#main").innerHTML=`<h2>Dashboard</h2><p class="lead">Today at the ZPPSU library.</p><div class="stats">${stat(db.books.filter(b=>!b.arch).length,"Books on shelf")}${stat(A.length,"Active loans")}${stat(L.length,"Overdue")}${stat(db.books.filter(b=>b.arch).length,"Archived")}</div> 
+
+<h3>Overdue books</h3>${loanTbl(L,1,"Nothing overdue. Nice work.")} 
+
+<h3>Reaching ${db.life} years soon</h3>${soon.length?`<div class="grid">${soon.map(card).join("")}</div>`:'<div class="empty">No books are close to their shelf life.</div>'}`;wire(); 
+
+} 
+
+function catalog(){ 
+
+const cats=[...new Set(db.books.filter(b=>!b.arch).map(b=>b.cat))].sort(); 
+
+$("#main").innerHTML=`<h2>Catalog</h2><p class="lead">Search the shelf and check which copies are available.</p><div class="note">Resources older than ${db.life} years are archived. They stay stored in the library but are no longer open for borrowing or viewing.</div> 
+
+<div class="toolbar"><input id="q" placeholder="Search by title, author or category" aria-label="Search"><select id="cf" aria-label="Category"><option value="">All categories</option>${cats.map(c=>`<option>${esc(c)}</option>`).join("")}</select><select id="af" aria-label="Availability"><option value="">Any availability</option><option value="1">Available now</option></select></div><div class="grid" id="list"></div>`; 
+
+const d=()=>{const q=$("#q").value.toLowerCase(),c=$("#cf").value,a=$("#af").value; 
+
+const L=db.books.filter(b=>!b.arch&&(!c||b.cat===c)&&(!a||avail(b)>0)&&(b.title+b.author+b.cat).toLowerCase().includes(q)); 
+
+$("#list").innerHTML=L.length?L.map(card).join(""):'<div class="empty">No books match. Try a shorter search.</div>'}; 
+
+["q","cf","af"].forEach(i=>$("#"+i).oninput=d);d(); 
+
+} 
+
+function loanTbl(L,ret,e){return tbl(["Book","Borrower","Borrowed","Due","Status",""],L.map(l=>{const b=book(l.bid),u=user(l.uid)||{name:"(removed)",idno:""}; 
+
+return `<tr class="${late(l)?"late":""}"><td>${esc(b.title)}</td><td>${esc(u.name)}<br><span class="meta">${esc(u.idno)}</span></td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.ret?`<span class="chip ok">Returned ${fmt(l.ret)}${fineOf(l)?" · fine ₱"+fineOf(l):""}</span>`:late(l)?`<span class="chip late">${od(l)} days overdue · ₱${fineOf(l)}</span>`:'<span class="chip out">Borrowed</span>'}</td><td>${ret&&!l.ret?`<button class="btn sm" data-a="ret" data-id="${l.id}">Mark returned</button>`:""}</td></tr>`}),e)} 
+
+function circ(){ 
+
+const bs=db.books.filter(b=>!b.arch&&avail(b)>0),us=db.users.filter(u=>u.role==="Borrower"); 
+
+$("#main").innerHTML=`<h2>Borrow & return</h2><p class="lead">Record a loan, then mark it returned when the book comes back.</p> 
+
+<div class="panel" id="lf"><div class="two"><div><label for="lu">Borrower</label><select id="lu" required>${us.map(u=>`<option value="${u.id}">${esc(u.name)} (${esc(u.idno)})</option>`).join("")}</select></div> 
+
+<div><label for="ld">Due date</label><input id="ld" type="date" required min="${TODAY}" value="${day(db.set.loanDays)}"></div></div> 
+
+<label for="lb">Book (archived books can't be borrowed)</label><select id="lb" required>${bs.map(b=>`<option value="${b.id}">${esc(b.title)} · ${avail(b)} left · Shelf ${esc(b.loc)}</option>`).join("")}</select> 
+
+<p><button class="btn" ${bs.length&&us.length?"":"disabled"}>Record loan</button></p></div> 
+
+<h3>Active loans</h3>${loanTbl(db.loans.filter(l=>!l.ret),1,"No active loans.")}`; 
+
+$("#lf").onsubmit=e=>{e.preventDefault();const b=book($("#lb").value);if(avail(b)<1)return toast("No copies left.");const bu=$("#lu").value;if(db.loans.filter(l=>l.uid===bu&&!l.ret).length>=db.set.maxLoans)return toast(`This borrower already has ${db.set.maxLoans} books. Return one first.`); 
+
+db.loans.unshift({id:"l"+Date.now(),bid:b.id,uid:$("#lu").value,out:TODAY,due:$("#ld").value,ret:null});log(`Loan: ${b.title} to ${(user(bu)||{}).name}`);save();toast(`Loan recorded. Due ${fmt($("#ld").value)}.`);appView()};wire(); 
+
+} 
+
+function myLoans(){const L=db.loans.filter(l=>l.uid===me.id); 
+
+$("#main").innerHTML=`<h2>My loans</h2><p class="lead">Return books by the due date. Ask library staff to borrow a book.</p>${L.some(late)?'<div class="note"><b>You have overdue books.</b> Please return them to the library.</div>':""}${loanTbl(L,0,"You haven't borrowed anything yet. Browse the catalog and visit the library desk.")}`} 
+
+function books(){ 
+
+const e=editId?book(editId):{}; 
+
+$("#main").innerHTML=`<h2>Books</h2><p class="lead">Add, update and organize library resources. The year published sets the shelf life.</p> 
+
+<div class="panel" id="bf"><h3 style="margin-top:0">${editId?"Edit book":"Add a book"}</h3><label for="bt">Title</label><input id="bt" required value="${esc(e.title)}"> 
+
+<div class="two"><div><label for="ba">Author</label><input id="ba" required value="${esc(e.author)}"></div><div><label for="bc">Category</label><input id="bc" required list="cl" value="${esc(e.cat)}"><datalist id="cl">${[...new Set(db.books.map(b=>b.cat))].map(c=>`<option>${esc(c)}`).join("")}</datalist></div> 
+
+<div><label for="by">Year published</label><input id="by" type="number" min="1500" max="${YEAR}" required value="${e.year??""}"></div><div><label for="bl">Shelf location</label><input id="bl" required placeholder="e.g. A-3" value="${esc(e.loc)}"></div> 
+
+<div><label for="bn">Copies</label><input id="bn" type="number" min="1" required value="${e.copies??1}"></div></div> 
+
+<p><button class="btn">${editId?"Save changes":"Add book"}</button> ${editId?'<button type="button" class="btn ghost" id="cx">Cancel</button>':""}</p></div> 
+
+${tbl(["Title","Author","Year","Shelf","Copies","Shelf life",""],db.books.filter(b=>!b.arch).map(b=>`<tr><td><b>${esc(b.title)}</b><br><span class="meta">${esc(b.cat)}</span></td><td>${esc(b.author)}</td><td>${b.year}</td><td>${esc(b.loc)}</td><td>${avail(b)}/${b.copies}</td><td style="min-width:9rem">${meter(b)}</td><td><button class="btn sm ghost" data-a="edit" data-id="${b.id}">Edit</button> <button class="btn sm" data-a="arch" data-id="${b.id}">Archive</button></td></tr>`),"No books yet.")}`; 
+
+$("#bf").onsubmit=ev=>{ev.preventDefault();const o={title:$("#bt").value.trim(),author:$("#ba").value.trim(),cat:$("#bc").value.trim(),year:+$("#by").value,loc:$("#bl").value.trim(),copies:+$("#bn").value}; 
+
+if(editId){const b=book(editId);if(o.copies<active(b))return toast(`${active(b)} copies are on loan. Copies can't go below that.`);Object.assign(b,o);log("Edited book: "+b.title);toast("Book updated.")} 
+
+else{db.books.unshift({id:"b"+Date.now(),arch:false,...o});log("Added book: "+o.title);toast(old(o)?"Book added. It is past its shelf life, so the next sweep will archive it.":"Book added.")} 
+
+editId=null;save();appView()}; 
+
+if(editId)$("#cx").onclick=()=>{editId=null;appView()};wire(); 
+
+} 
+
+function archive(){ 
+
+const el=db.books.filter(b=>!b.arch&&old(b)),A=db.books.filter(b=>b.arch); 
+
+$("#main").innerHTML=`<h2>Archive</h2><p class="lead">Archived books are not for borrowing or viewing in the catalog. They stay stored in the library and can be restored.</p> 
+
+<div class="panel" id="gf"><label for="gy">Shelf life (years since publication)</label><input id="gy" type="number" min="1" value="${db.life}"> 
+
+<div class="hint">${el.length} book${el.length==1?"":"s"} past shelf life${el.some(active)?" (books still on loan wait until they are returned)":""}.</div><p><button class="btn gold">Save and archive old books</button></p></div> 
+
+<h3>Archived books (${A.length})</h3>${tbl(["Title","Author","Year","Shelf","Archived on",""],A.map(b=>`<tr><td><b>${esc(b.title)}</b></td><td>${esc(b.author)}</td><td>${b.year}</td><td>${esc(b.loc)}</td><td>${b.archAt?fmt(b.archAt):"-"}</td><td><button class="btn sm ghost" data-a="rest" data-id="${b.id}">Restore</button> ${admin()?`<button class="btn sm" data-a="delbook" data-c="1" data-id="${b.id}">Delete</button>`:""}</td></tr>`),"Nothing archived yet.")}`; 
+
+$("#gf").onsubmit=e=>{e.preventDefault();db.life=Math.max(1,+$("#gy").value||15);const n=sweep();save();toast(n?`${n} book${n>1?"s":""} moved to the archive.`:"No more books to archive.");appView()};wire(); 
+
+} 
+
+function reports(){ 
+
+const A=db.loans.filter(l=>!l.ret); 
+
+$("#main").innerHTML=`<h2>Reports</h2><p class="lead">Track loans, overdue books and borrowing history.</p><div class="stats">${stat(db.books.length,"Titles")}${stat(db.books.reduce((s,b)=>s+b.copies,0),"Copies")}${stat(A.length,"Active loans")}${stat(A.filter(late).length,"Overdue")}${stat(db.loans.length,"All transactions")}</div> 
+
+<p><button class="btn gold" id="csv">Download history (CSV)</button> <button class="btn ghost" onclick="print()">Print</button></p> 
+
+<h3>Overdue</h3>${loanTbl(A.filter(late),1,"Nothing overdue.")}<h3>Borrowing history</h3>${loanTbl(db.loans,0,"No transactions yet.")}<h3>Activity log</h3>${tbl(["When","Who","Action"],db.log.slice(0,30).map(x=>`<tr><td>${new Date(x.at).toLocaleString()}</td><td>${esc(x.by)}</td><td>${esc(x.msg)}</td></tr>`),"No activity yet.")}`; 
+
+$("#csv").onclick=()=>{const r=[["Book","Borrower","ID","Borrowed","Due","Returned"],...db.loans.map(l=>[book(l.bid).title,(user(l.uid)||{}).name,(user(l.uid)||{}).idno,l.out,l.due,l.ret||""])]; 
+
+const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.map(x=>x.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n")],{type:"text/csv"}));a.download="lrbms-history.csv";a.click()};wire(); 
+
+} 
+
+function accounts(){ 
+
+$("#main").innerHTML=`<h2>Accounts</h2><p class="lead">Manage administrator, staff and borrower accounts.</p> 
+
+<div class="panel" id="uf"><div class="two"><div><label for="un">Full name</label><input id="un" required></div><div><label for="ui">ID number</label><input id="ui" required></div> 
+
+<div><label for="uu">Username</label><input id="uu" required></div><div><label for="up">Password</label><input id="up" required minlength="4"></div></div> 
+
+<label for="ur">Role</label><select id="ur"><option>Borrower</option><option>Library Staff</option><option>Administrator</option></select><p><button class="btn">Add account</button></p></div> 
+
+${tbl(["Name","ID","Username","Role",""],db.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.idno)}</td><td>${esc(u.user)}</td><td>${u.role}</td><td>${u.id===me.id||db.loans.some(l=>l.uid===u.id&&!l.ret)?'<span class="meta">Can\'t remove</span>':`<button class="btn sm ghost" data-a="del" data-c="1" data-id="${u.id}">Remove</button>`}</td></tr>`),"")}`; 
+
+$("#uf").onsubmit=e=>{e.preventDefault();const u=$("#uu").value.trim().toLowerCase();if(db.users.some(x=>x.user===u))return toast("That username is taken."); 
+
+db.users.push({id:"u"+Date.now(),name:$("#un").value.trim(),idno:$("#ui").value.trim(),user:u,pass:$("#up").value,role:$("#ur").value});log("Added account: "+$("#un").value.trim());save();toast("Account added.");appView()};wire(); 
+
+} 
+
+  
+
+function records(){ 
+
+if(recId){const u=user(recId),L=db.loans.filter(l=>l.uid===recId); 
+
+$("#main").innerHTML=`<button class="btn sm ghost" data-a="rec" data-id="">← All records</button><h2 style="margin-top:.7rem">${esc(u.name)}</h2><p class="lead">ID ${esc(u.idno)} · ${esc(u.contact||"No contact on file")}</p><div class="stats">${stat(L.length,"Books borrowed")}${stat(L.filter(l=>!l.ret).length,"Active")}${stat("₱"+L.reduce((a,l)=>a+fineOf(l),0),"Fines")}</div>${loanTbl(L,1,"No borrowing records yet.")}`;return wire()} 
+
+$("#main").innerHTML=`<h2>Records</h2><p class="lead">Borrower records and their borrowing history.</p><div class="toolbar"><input id="q" placeholder="Search by name or ID" aria-label="Search"></div><div id="rl"></div>`; 
+
+const d=()=>{const q=$("#q").value.toLowerCase();$("#rl").innerHTML=tbl(["Borrower","ID","Borrowed","Active","Fines",""],db.users.filter(u=>u.role==="Borrower"&&(u.name+u.idno).toLowerCase().includes(q)).map(u=>{const L=db.loans.filter(l=>l.uid===u.id);return `<tr><td>${esc(u.name)}</td><td>${esc(u.idno)}</td><td>${L.length}</td><td>${L.filter(l=>!l.ret).length}</td><td>₱${L.reduce((a,l)=>a+fineOf(l),0)}</td><td><button class="btn sm" data-a="rec" data-id="${u.id}">View record</button></td></tr>`}),"No borrowers found.");wire()}; 
+
+$("#q").oninput=d;d(); 
+
+} 
+
+function profile(){ 
+
+$("#main").innerHTML=`<h2>My profile</h2><p class="lead">${me.role} · username <b>${esc(me.user)}</b></p> 
+
+<div class="panel" id="pf1"><h3 style="margin-top:0">Personal information</h3><label for="pn">Full name</label><input id="pn" required value="${esc(me.name)}"><div class="two"><div><label for="pi">ID number</label><input id="pi" required value="${esc(me.idno)}"></div><div><label for="pc">Email or phone</label><input id="pc" value="${esc(me.contact)}"></div></div><p><button class="btn">Save profile</button></p></div> 
+
+<div class="panel" id="pf2"><h3 style="margin-top:0">Change password</h3><div class="two"><div><label for="po">Current password</label><input id="po" type="password" required></div><div><label for="pw">New password</label><input id="pw" type="password" required minlength="4"></div></div><p><button class="btn">Update password</button></p></div>`; 
+
+$("#pf1").onsubmit=()=>{Object.assign(me,{name:$("#pn").value.trim(),idno:$("#pi").value.trim(),contact:$("#pc").value.trim()});log("Updated profile");save();toast("Profile saved.");appView()}; 
+
+$("#pf2").onsubmit=()=>{if($("#po").value!==me.pass)return toast("Current password is wrong.");me.pass=$("#pw").value;log("Changed password");save();toast("Password updated.");$("#po").value=$("#pw").value=""}; 
+
+} 
+
+function settings(){const s=db.set; 
+
+$("#main").innerHTML=`<h2>Settings</h2><p class="lead">Library rules and website details. Changes apply right away.</p> 
+
+<div class="panel" id="sf1"><label for="sn">Library name</label><input id="sn" required value="${esc(s.name)}"><label for="sc">Contact email</label><input id="sc" required value="${esc(s.contact)}"> 
+
+<div class="two"><div><label for="sd">Loan period (days)</label><input id="sd" type="number" min="1" max="60" required value="${s.loanDays}"></div><div><label for="sx">Fine per overdue day (₱)</label><input id="sx" type="number" min="0" required value="${s.fine}"></div> 
+
+<div><label for="sm">Max books per borrower</label><input id="sm" type="number" min="1" max="20" required value="${s.maxLoans}"></div><div><label for="sy">Shelf life (years)</label><input id="sy" type="number" min="1" max="100" required value="${db.life}"></div></div><div class="hint">Books older than the shelf life move to the archive.</div><p><button class="btn gold">Save settings</button></p></div> 
+
+<h3>Data</h3><p><button class="btn ghost" id="bk">Download backup (JSON)</button> <button class="btn" data-a="reset" data-c="1">Reset all data</button></p>`; 
+
+$("#sf1").onsubmit=()=>{Object.assign(s,{name:$("#sn").value.trim(),contact:$("#sc").value.trim(),loanDays:+$("#sd").value,fine:+$("#sx").value,maxLoans:+$("#sm").value});db.life=+$("#sy").value;const n=sweep();log("Updated settings");save();toast("Settings saved."+(n?` ${n} book${n>1?"s":""} archived.`:""));appView()}; 
+
+$("#bk").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:"application/json"}));a.download="lrbms-backup.json";a.click()};wire(); 
+
+} 
+
+/* ---------- ACTIONS ---------- */ 
+
+const ACT={ 
+
+ret(id){const l=db.loans.find(x=>x.id===id);l.ret=TODAY;log("Returned: "+book(l.bid).title);const n=sweep();save();toast("Returned."+(fineOf(l)?` Fine: ₱${fineOf(l)}.`:"")+(n?" Past shelf life, so it moved to the archive.":""));appView()}, 
+
+edit(id){editId=id;appView();scrollTo(0,0)}, 
+
+arch(id){const b=book(id);if(active(b))return toast("This book is on loan. Archive it after it is returned.");b.arch=true;b.keep=false;b.archAt=TODAY;log("Archived: "+b.title);save();toast("Moved to the archive.");appView()}, 
+
+rest(id){const b=book(id);b.arch=false;b.keep=true;log("Restored: "+b.title);save();toast("Restored. It won't be auto-archived again.");appView()}, 
+
+delbook(id){const b=book(id);if(active(b))return toast("This book is on loan.");db.books=db.books.filter(x=>x.id!==id);log("Deleted book: "+b.title);save();toast("Book deleted permanently.");appView()}, 
+
+del(id){const u=user(id);db.users=db.users.filter(x=>x.id!==id);log("Removed account: "+u.name);save();toast("Account removed.");appView()}, 
+
+rec(id){recId=id||null;appView()}, 
+
+reset(){try{localStorage.removeItem("lrbms")}catch(e){}db=seed();me=null;mode="login";authView();toast("All data was reset.")} 
+
+}; 
+
+function wire(){document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{if(b.dataset.c&&!b.dataset.s){b.dataset.s=1;const t=b.textContent;b.textContent="Click again to confirm";setTimeout(()=>{b.dataset.s="";b.textContent=t},3000);return}ACT[b.dataset.a](b.dataset.id)})} 
+
+/* forms are plain divs: previews that sandbox the page block real <form> submits */ 
+
+function go(f){if(typeof f.onsubmit!=="function")return;const bad=[...f.querySelectorAll("[required]")].find(i=>!i.value.trim()||(i.minLength>0&&i.value.length<i.minLength)||(i.type==="number"&&((i.min!==""&&+i.value<+i.min)||(i.max!==""&&+i.value>+i.max))));if(bad){bad.focus();return toast("Please complete every field correctly.")}f.onsubmit({preventDefault(){}})} 
+
+document.addEventListener("click",e=>{const b=e.target.closest("button:not([type=button])");const f=b&&b.closest(".panel,.formbox");if(f)go(f)}); 
+
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){const f=e.target.closest(".panel,.formbox");if(f){e.preventDefault();go(f)}}}); 
+
+sweep();authView(); 
+
+</script> 
+
+</body> 
+
+</html>
